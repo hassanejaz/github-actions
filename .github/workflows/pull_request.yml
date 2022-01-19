@@ -1,0 +1,27 @@
+name: Terraform Plan Shares Infra
+on:
+  pull_request:
+    branches:
+      - main
+
+env:
+  AWS_DEFAULT_REGION: eu-west-3
+
+jobs:
+  Plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+
+      - name: Set env BRANCH
+        run: echo "BRANCH=$(echo $GITHUB_BASE_REF)" >> $GITHUB_ENV
+
+
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.10
+      - name: 'checkout'
+        uses: actions/checkout@v2
+      - name: wait 
+        run: sleep 7
