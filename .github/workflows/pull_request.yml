@@ -1,6 +1,6 @@
 name: Terraform Plan Shares Infra
 on:
-  pull_request:
+  push:
     branches:
       - main
 
