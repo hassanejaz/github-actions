@@ -1,455 +1,455 @@
-name: Deploy Dev
+# name: Deploy Dev
 
-concurrency: dev_deploy
+# concurrency: dev_deploy
 
-# Controls when the workflow will run
-on:
-  # Triggers the workflow on push or pull request events but only for the dev branch
-  push:
-    branches:
-      - main
-    # paths:
-    #   - 'services/**'
-    #   - 'core/**'
-    #   - 'infra/**'
-    #   - '.github/workflows/deploy-dev.yml'
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+# # Controls when the workflow will run
+# on:
+#   # Triggers the workflow on push or pull request events but only for the dev branch
+#   push:
+#     branches:
+#       - main
+#     # paths:
+#     #   - 'services/**'
+#     #   - 'core/**'
+#     #   - 'infra/**'
+#     #   - '.github/workflows/deploy-dev.yml'
+#   # Allows you to run this workflow manually from the Actions tab
+#   workflow_dispatch:
 
-env:
-  account_id: "502811836457"
-  API_TOKEN: ${{ secrets.API_TOKEN }}
+# env:
+#   account_id: "502811836457"
+#   API_TOKEN: ${{ secrets.API_TOKEN }}
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:
-  paths:
-    name: Check Paths
-    runs-on: ubuntu-latest
-    outputs:
-      infra: ${{ steps.infra.outputs.test }}
-      core: ${{ steps.core.outputs.test }}
-      services: ${{ steps.services.outputs.test }}
-      docs: ${{ steps.docs.outputs.test }}
-      redis: ${{ steps.redis.outputs.test }}
-      pyshares: ${{ steps.pyshares.outputs.test }}
-      website: ${{ steps.website.outputs.test }}
-      metabase: ${{ steps.metabase.outputs.test }}
-      golden_gun_ecs: ${{ steps.golden_gun_ecs.outputs.test }}
-      golden_gun: ${{ steps.golden_gun.outputs.test }}
-      force: ${{ steps.force.outputs.test }}
-    steps:
-      - name: checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 2
-      - name: python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-      - id: initialise
-        run: pip install pygithub
-      - id: infra
-        run: echo "::set-output name=test::$(git diff --name-only HEAD HEAD^ | grep -q ^infra && echo changed || true)"
-      - id: core
-        run: echo "::set-output name=test::$(git diff --name-only HEAD HEAD^ | grep -q ^core && echo changed || true)"
-      - id: services
-        run: echo "::set-output name=test::$(git diff --name-only HEAD HEAD^ | grep -q ^services && echo changed || true)"
-      - id: docs
-        run: echo "::set-output name=test::$(git diff --name-only HEAD HEAD^ | grep -q "^services/docs" && echo changed || true)"
-      - id: redis
-        run: echo "::set-output name=test::$(git diff --name-only HEAD HEAD^ | grep -q "^services/redis" && echo changed || true)"
-      - id: pyshares
-        run: echo "::set-output name=test::$(git diff --name-only HEAD HEAD^ | grep -q "^services/pyshares" && echo changed || true)"
-      - id: website
-        run: echo "::set-output name=test::$(git diff --name-only HEAD HEAD^ | grep -q "^services/website" && echo changed || true)"
-      - id: metabase
-        run: echo "::set-output name=test::$(git diff --name-only HEAD HEAD^ | grep -q "^services/metabase" && echo changed || true)"
-      - id: golden_gun_ecs
-        run: echo "::set-output name=test::$(git diff --name-only HEAD HEAD^ | grep -q "^services/golden_gun_ecs" && echo changed || true)"
-      - id: golden_gun
-        run: echo "::set-output name=test::$(git diff --name-only HEAD HEAD^ | grep -q "^services/golden_gun" && echo changed || true)"
-      - id: force
-        run: echo "::set-output name=test::$(python scripts/check_workflow_status "$API_TOKEN" "Sh4res/InfraV2" deploy-dev.yml || true)"
+# # A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# jobs:
+#   paths:
+#     name: Check Paths
+#     runs-on: ubuntu-latest
+#     outputs:
+#       infra: ${{ steps.infra.outputs.test }}
+#       core: ${{ steps.core.outputs.test }}
+#       services: ${{ steps.services.outputs.test }}
+#       docs: ${{ steps.docs.outputs.test }}
+#       redis: ${{ steps.redis.outputs.test }}
+#       pyshares: ${{ steps.pyshares.outputs.test }}
+#       website: ${{ steps.website.outputs.test }}
+#       metabase: ${{ steps.metabase.outputs.test }}
+#       golden_gun_ecs: ${{ steps.golden_gun_ecs.outputs.test }}
+#       golden_gun: ${{ steps.golden_gun.outputs.test }}
+#       force: ${{ steps.force.outputs.test }}
+#     steps:
+#       - name: checkout
+#         uses: actions/checkout@v2
+#         with:
+#           fetch-depth: 2
+#       - name: python
+#         uses: actions/setup-python@v2
+#         with:
+#           python-version: '3.x'
+#       - id: initialise
+#         run: pip install pygithub
+#       - id: infra
+#         run: echo "::set-output name=test::$(git diff --name-only HEAD HEAD^ | grep -q ^infra && echo changed || true)"
+#       - id: core
+#         run: echo "::set-output name=test::$(git diff --name-only HEAD HEAD^ | grep -q ^core && echo changed || true)"
+#       - id: services
+#         run: echo "::set-output name=test::$(git diff --name-only HEAD HEAD^ | grep -q ^services && echo changed || true)"
+#       - id: docs
+#         run: echo "::set-output name=test::$(git diff --name-only HEAD HEAD^ | grep -q "^services/docs" && echo changed || true)"
+#       - id: redis
+#         run: echo "::set-output name=test::$(git diff --name-only HEAD HEAD^ | grep -q "^services/redis" && echo changed || true)"
+#       - id: pyshares
+#         run: echo "::set-output name=test::$(git diff --name-only HEAD HEAD^ | grep -q "^services/pyshares" && echo changed || true)"
+#       - id: website
+#         run: echo "::set-output name=test::$(git diff --name-only HEAD HEAD^ | grep -q "^services/website" && echo changed || true)"
+#       - id: metabase
+#         run: echo "::set-output name=test::$(git diff --name-only HEAD HEAD^ | grep -q "^services/metabase" && echo changed || true)"
+#       - id: golden_gun_ecs
+#         run: echo "::set-output name=test::$(git diff --name-only HEAD HEAD^ | grep -q "^services/golden_gun_ecs" && echo changed || true)"
+#       - id: golden_gun
+#         run: echo "::set-output name=test::$(git diff --name-only HEAD HEAD^ | grep -q "^services/golden_gun" && echo changed || true)"
+#       - id: force
+#         run: echo "::set-output name=test::$(python scripts/check_workflow_status "$API_TOKEN" "Sh4res/InfraV2" deploy-dev.yml || true)"
 
-  infra:
-    needs: paths
-    if: (needs.paths.outputs.infra == 'changed' || needs.paths.outputs.force != 'success')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Configure CICD AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-region: eu-west-1
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#   infra:
+#     needs: paths
+#     if: (needs.paths.outputs.infra == 'changed' || needs.paths.outputs.force != 'success')
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Configure CICD AWS Credentials
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           aws-region: eu-west-1
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: AWS Configure Role
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume:  arn:aws:iam::${{ env.account_id }}:role/sharesCICD
-          aws-region: eu-west-3
-          role-skip-session-tagging: true
-          role-duration-seconds: 1200
-          role-session-name: cicd_role_session
+#       - name: AWS Configure Role
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           role-to-assume:  arn:aws:iam::${{ env.account_id }}:role/sharesCICD
+#           aws-region: eu-west-3
+#           role-skip-session-tagging: true
+#           role-duration-seconds: 1200
+#           role-session-name: cicd_role_session
 
-      - uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.0.10
-      - name: 'checkout'
-        uses: actions/checkout@v2
+#       - uses: hashicorp/setup-terraform@v1
+#         with:
+#           terraform_version: 1.0.10
+#       - name: 'checkout'
+#         uses: actions/checkout@v2
 
-      - name: 'Terraform plan'
-        run: make plan TF_VAR_tfstack=infra TF_VAR_envtype=dev
-      - name: 'Terraform apply'
-        run: make apply TF_VAR_tfstack=infra TF_VAR_envtype=dev
-      - name: 'Terraform cleanup'
-        run: make clean TF_VAR_tfstack=infra TF_VAR_envtype=dev
+#       - name: 'Terraform plan'
+#         run: make plan TF_VAR_tfstack=infra TF_VAR_envtype=dev
+#       - name: 'Terraform apply'
+#         run: make apply TF_VAR_tfstack=infra TF_VAR_envtype=dev
+#       - name: 'Terraform cleanup'
+#         run: make clean TF_VAR_tfstack=infra TF_VAR_envtype=dev
 
-  core:
-    needs:
-     - paths
-     - infra
-    if: always() && (needs.paths.outputs.infra == 'changed' || needs.paths.outputs.core == 'changed' || needs.paths.outputs.force != 'success') && (needs.infra.result == 'success' || needs.infra.result == 'skipped')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Configure CICD AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-region: eu-west-1
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#   core:
+#     needs:
+#      - paths
+#      - infra
+#     if: always() && (needs.paths.outputs.infra == 'changed' || needs.paths.outputs.core == 'changed' || needs.paths.outputs.force != 'success') && (needs.infra.result == 'success' || needs.infra.result == 'skipped')
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Configure CICD AWS Credentials
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           aws-region: eu-west-1
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: AWS Configure Role
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume:  arn:aws:iam::${{ env.account_id }}:role/sharesCICD
-          aws-region: eu-west-3
-          role-skip-session-tagging: true
-          role-duration-seconds: 1200
-          role-session-name: cicd_role_session
+#       - name: AWS Configure Role
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           role-to-assume:  arn:aws:iam::${{ env.account_id }}:role/sharesCICD
+#           aws-region: eu-west-3
+#           role-skip-session-tagging: true
+#           role-duration-seconds: 1200
+#           role-session-name: cicd_role_session
 
-      - uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.0.10
-      - name: 'checkout'
-        uses: actions/checkout@v2
+#       - uses: hashicorp/setup-terraform@v1
+#         with:
+#           terraform_version: 1.0.10
+#       - name: 'checkout'
+#         uses: actions/checkout@v2
 
-      - name: 'Terraform plan'
-        run: make plan TF_VAR_tfstack=core TF_VAR_envtype=dev
-      - name: 'Terraform apply'
-        run: make apply TF_VAR_tfstack=core TF_VAR_envtype=dev
-      - name: 'Terraform cleanup'
-        run: make clean TF_VAR_tfstack=core TF_VAR_envtype=dev
+#       - name: 'Terraform plan'
+#         run: make plan TF_VAR_tfstack=core TF_VAR_envtype=dev
+#       - name: 'Terraform apply'
+#         run: make apply TF_VAR_tfstack=core TF_VAR_envtype=dev
+#       - name: 'Terraform cleanup'
+#         run: make clean TF_VAR_tfstack=core TF_VAR_envtype=dev
 
-  services:
-    needs:
-     - paths
-     - core
-    if: always() && (needs.paths.outputs.infra == 'changed' || needs.paths.outputs.core == 'changed' || needs.paths.outputs.services == 'changed' || needs.paths.outputs.force != 'success') && (needs.core.result == 'success' || needs.core.result == 'skipped')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Configure CICD AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-region: eu-west-1
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#   services:
+#     needs:
+#      - paths
+#      - core
+#     if: always() && (needs.paths.outputs.infra == 'changed' || needs.paths.outputs.core == 'changed' || needs.paths.outputs.services == 'changed' || needs.paths.outputs.force != 'success') && (needs.core.result == 'success' || needs.core.result == 'skipped')
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Configure CICD AWS Credentials
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           aws-region: eu-west-1
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: AWS Configure Role
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume:  arn:aws:iam::${{ env.account_id }}:role/sharesCICD
-          aws-region: eu-west-3
-          role-skip-session-tagging: true
-          role-duration-seconds: 1200
-          role-session-name: cicd_role_session
+#       - name: AWS Configure Role
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           role-to-assume:  arn:aws:iam::${{ env.account_id }}:role/sharesCICD
+#           aws-region: eu-west-3
+#           role-skip-session-tagging: true
+#           role-duration-seconds: 1200
+#           role-session-name: cicd_role_session
 
-      - uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.0.10
-      - name: 'checkout'
-        uses: actions/checkout@v2
-      - name: Deployment Start
-        id: slack
-        uses: slackapi/slack-github-action@v1.16.0
-        with:
-          payload: "{\"username\": \"Dev Bot\", \"text\":\"Deployment starting on Dev :ghost: \"}"
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+#       - uses: hashicorp/setup-terraform@v1
+#         with:
+#           terraform_version: 1.0.10
+#       - name: 'checkout'
+#         uses: actions/checkout@v2
+#       - name: Deployment Start
+#         id: slack
+#         uses: slackapi/slack-github-action@v1.16.0
+#         with:
+#           payload: "{\"username\": \"Dev Bot\", \"text\":\"Deployment starting on Dev :ghost: \"}"
+#         env:
+#           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+#           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
-      - name: 'Terraform plan'
-        run: make plan TF_VAR_tfstack=services TF_VAR_envtype=dev
-      - name: 'Terraform apply'
-        run: make apply TF_VAR_tfstack=services TF_VAR_envtype=dev
-      - name: 'Terraform cleanup'
-        run: make clean TF_VAR_tfstack=services TF_VAR_envtype=dev
+#       - name: 'Terraform plan'
+#         run: make plan TF_VAR_tfstack=services TF_VAR_envtype=dev
+#       - name: 'Terraform apply'
+#         run: make apply TF_VAR_tfstack=services TF_VAR_envtype=dev
+#       - name: 'Terraform cleanup'
+#         run: make clean TF_VAR_tfstack=services TF_VAR_envtype=dev
 
-      - name: App versions
-        run: |
-          echo "shares_version=`cat ./services/environments/dev.tfvars | grep shares_version | sed 's/.*shares_version //' | cut -d'"' -f2`" >> $GITHUB_ENV
-          echo "workers_version=`cat ./services/environments/dev.tfvars | grep workers_version | sed 's/.*workers_version //' | cut -d'"' -f2`" >> $GITHUB_ENV
-          echo "website_version=`cat ./services/environments/dev.tfvars | grep website_version | sed 's/.*website_version //' | cut -d'"' -f2`" >> $GITHUB_ENV
+#       - name: App versions
+#         run: |
+#           echo "shares_version=`cat ./services/environments/dev.tfvars | grep shares_version | sed 's/.*shares_version //' | cut -d'"' -f2`" >> $GITHUB_ENV
+#           echo "workers_version=`cat ./services/environments/dev.tfvars | grep workers_version | sed 's/.*workers_version //' | cut -d'"' -f2`" >> $GITHUB_ENV
+#           echo "website_version=`cat ./services/environments/dev.tfvars | grep website_version | sed 's/.*website_version //' | cut -d'"' -f2`" >> $GITHUB_ENV
 
-      - name: Deployment Finished
-        id: slack_fin
-        uses: slackapi/slack-github-action@v1.16.0
-        with:
-          payload: "{\"username\": \"Dev Bot\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"plain_text\",\"text\":\"Deployment Finished :white_check_mark: \"}},{\"type\":\"section\",\"fields\":[{\"type\":\"mrkdwn\",\"text\":\"*Shares:* ${{ env.shares_version }} \"} ,{\"type\":\"mrkdwn\",\"text\":\"*Workers:* ${{ env.workers_version }} \"}, {\"type\":\"mrkdwn\",\"text\":\"*Website:* ${{ env.website_version }} \"}]}]}"
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+#       - name: Deployment Finished
+#         id: slack_fin
+#         uses: slackapi/slack-github-action@v1.16.0
+#         with:
+#           payload: "{\"username\": \"Dev Bot\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"plain_text\",\"text\":\"Deployment Finished :white_check_mark: \"}},{\"type\":\"section\",\"fields\":[{\"type\":\"mrkdwn\",\"text\":\"*Shares:* ${{ env.shares_version }} \"} ,{\"type\":\"mrkdwn\",\"text\":\"*Workers:* ${{ env.workers_version }} \"}, {\"type\":\"mrkdwn\",\"text\":\"*Website:* ${{ env.website_version }} \"}]}]}"
+#         env:
+#           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+#           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
-  docs:
-    needs:
-     - paths
-     - core
-    if: always() && (needs.paths.outputs.infra == 'changed' || needs.paths.outputs.core == 'changed' || needs.paths.outputs.docs == 'changed' || needs.paths.outputs.force != 'success') && (needs.core.result == 'success' || needs.core.result == 'skipped')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Configure CICD AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-region: eu-west-1
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#   docs:
+#     needs:
+#      - paths
+#      - core
+#     if: always() && (needs.paths.outputs.infra == 'changed' || needs.paths.outputs.core == 'changed' || needs.paths.outputs.docs == 'changed' || needs.paths.outputs.force != 'success') && (needs.core.result == 'success' || needs.core.result == 'skipped')
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Configure CICD AWS Credentials
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           aws-region: eu-west-1
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: AWS Configure Role
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume:  arn:aws:iam::${{ env.account_id }}:role/sharesCICD
-          aws-region: eu-west-3
-          role-skip-session-tagging: true
-          role-duration-seconds: 1200
-          role-session-name: cicd_role_session
+#       - name: AWS Configure Role
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           role-to-assume:  arn:aws:iam::${{ env.account_id }}:role/sharesCICD
+#           aws-region: eu-west-3
+#           role-skip-session-tagging: true
+#           role-duration-seconds: 1200
+#           role-session-name: cicd_role_session
 
-      - uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.0.10
-      - name: 'checkout'
-        uses: actions/checkout@v2
+#       - uses: hashicorp/setup-terraform@v1
+#         with:
+#           terraform_version: 1.0.10
+#       - name: 'checkout'
+#         uses: actions/checkout@v2
 
-      - name: 'Terraform plan'
-        run: make plan TF_VAR_tfstack=docs TF_VAR_envtype=dev
-      - name: 'Terraform apply'
-        run: make apply TF_VAR_tfstack=docs TF_VAR_envtype=dev
-      - name: 'Terraform cleanup'
-        run: make clean TF_VAR_tfstack=docs TF_VAR_envtype=dev
+#       - name: 'Terraform plan'
+#         run: make plan TF_VAR_tfstack=docs TF_VAR_envtype=dev
+#       - name: 'Terraform apply'
+#         run: make apply TF_VAR_tfstack=docs TF_VAR_envtype=dev
+#       - name: 'Terraform cleanup'
+#         run: make clean TF_VAR_tfstack=docs TF_VAR_envtype=dev
 
-  redis:
-    needs:
-     - paths
-     - core
-    if: always() && (needs.paths.outputs.infra == 'changed' || needs.paths.outputs.core == 'changed' || needs.paths.outputs.redis == 'changed' || needs.paths.outputs.force != 'success') && (needs.core.result == 'success' || needs.core.result == 'skipped')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Configure CICD AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-region: eu-west-1
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#   redis:
+#     needs:
+#      - paths
+#      - core
+#     if: always() && (needs.paths.outputs.infra == 'changed' || needs.paths.outputs.core == 'changed' || needs.paths.outputs.redis == 'changed' || needs.paths.outputs.force != 'success') && (needs.core.result == 'success' || needs.core.result == 'skipped')
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Configure CICD AWS Credentials
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           aws-region: eu-west-1
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: AWS Configure Role
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume:  arn:aws:iam::${{ env.account_id }}:role/sharesCICD
-          aws-region: eu-west-3
-          role-skip-session-tagging: true
-          role-duration-seconds: 1200
-          role-session-name: cicd_role_session
+#       - name: AWS Configure Role
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           role-to-assume:  arn:aws:iam::${{ env.account_id }}:role/sharesCICD
+#           aws-region: eu-west-3
+#           role-skip-session-tagging: true
+#           role-duration-seconds: 1200
+#           role-session-name: cicd_role_session
 
-      - uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.0.10
-      - name: 'checkout'
-        uses: actions/checkout@v2
+#       - uses: hashicorp/setup-terraform@v1
+#         with:
+#           terraform_version: 1.0.10
+#       - name: 'checkout'
+#         uses: actions/checkout@v2
 
-      - name: 'Terraform plan'
-        run: make plan TF_VAR_tfstack=redis TF_VAR_envtype=dev
-      - name: 'Terraform apply'
-        run: make apply TF_VAR_tfstack=redis TF_VAR_envtype=dev
-      - name: 'Terraform cleanup'
-        run: make clean TF_VAR_tfstack=redis TF_VAR_envtype=dev
-
-
-  pyshares:
-    needs:
-     - paths
-     - core
-    if: always() && (needs.paths.outputs.infra == 'changed' || needs.paths.outputs.core == 'changed' || needs.paths.outputs.pyshares == 'changed' || needs.paths.outputs.force != 'success') && (needs.core.result == 'success' || needs.core.result == 'skipped')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Configure CICD AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-region: eu-west-1
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: AWS Configure Role
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume:  arn:aws:iam::${{ env.account_id }}:role/sharesCICD
-          aws-region: eu-west-3
-          role-skip-session-tagging: true
-          role-duration-seconds: 1200
-          role-session-name: cicd_role_session
-
-      - uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.0.10
-      - name: 'checkout'
-        uses: actions/checkout@v2
-
-      - name: 'Terraform plan'
-        run: make plan TF_VAR_tfstack=pyshares TF_VAR_envtype=dev
-      - name: 'Terraform apply'
-        run: make apply TF_VAR_tfstack=pyshares TF_VAR_envtype=dev
-      - name: 'Terraform cleanup'
-        run: make clean TF_VAR_tfstack=pyshares TF_VAR_envtype=dev
-
-  website:
-    needs:
-     - paths
-     - core
-    if: always() && (needs.paths.outputs.infra == 'changed' || needs.paths.outputs.core == 'changed' || needs.paths.outputs.website == 'changed' || needs.paths.outputs.force != 'success') && (needs.core.result == 'success' || needs.core.result == 'skipped')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Configure CICD AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-region: eu-west-1
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: AWS Configure Role
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume:  arn:aws:iam::${{ env.account_id }}:role/sharesCICD
-          aws-region: eu-west-3
-          role-skip-session-tagging: true
-          role-duration-seconds: 1200
-          role-session-name: cicd_role_session
-
-      - uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.0.10
-      - name: 'checkout'
-        uses: actions/checkout@v2
-
-      - name: 'Terraform plan'
-        run: make plan TF_VAR_tfstack=website TF_VAR_envtype=dev
-      - name: 'Terraform apply'
-        run: make apply TF_VAR_tfstack=website TF_VAR_envtype=dev
-      - name: 'Terraform cleanup'
-        run: make clean TF_VAR_tfstack=website TF_VAR_envtype=dev
-
-  metabase:
-    needs:
-     - paths
-     - core
-    if: always() && (needs.paths.outputs.infra == 'changed' || needs.paths.outputs.core == 'changed' || needs.paths.outputs.metabase == 'changed' || needs.paths.outputs.force != 'success') && (needs.core.result == 'success' || needs.core.result == 'skipped')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Configure CICD AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-region: eu-west-1
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: AWS Configure Role
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume:  arn:aws:iam::${{ env.account_id }}:role/sharesCICD
-          aws-region: eu-west-3
-          role-skip-session-tagging: true
-          role-duration-seconds: 1200
-          role-session-name: cicd_role_session
-
-      - uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.0.10
-      - name: 'checkout'
-        uses: actions/checkout@v2
-
-      - name: 'Terraform plan'
-        run: make plan TF_VAR_tfstack=metabase TF_VAR_envtype=dev
-      - name: 'Terraform apply'
-        run: make apply TF_VAR_tfstack=metabase TF_VAR_envtype=dev
-      - name: 'Terraform cleanup'
-        run: make clean TF_VAR_tfstack=metabase TF_VAR_envtype=dev
+#       - name: 'Terraform plan'
+#         run: make plan TF_VAR_tfstack=redis TF_VAR_envtype=dev
+#       - name: 'Terraform apply'
+#         run: make apply TF_VAR_tfstack=redis TF_VAR_envtype=dev
+#       - name: 'Terraform cleanup'
+#         run: make clean TF_VAR_tfstack=redis TF_VAR_envtype=dev
 
 
-  golden_gun_ecs:
-    needs:
-     - paths
-     - core
-    if: always() && (needs.paths.outputs.infra == 'changed' || needs.paths.outputs.core == 'changed' || needs.paths.outputs.golden_gun_ecs == 'changed' || needs.paths.outputs.force != 'success') && (needs.core.result == 'success' || needs.core.result == 'skipped')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Configure CICD AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-region: eu-west-1
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#   pyshares:
+#     needs:
+#      - paths
+#      - core
+#     if: always() && (needs.paths.outputs.infra == 'changed' || needs.paths.outputs.core == 'changed' || needs.paths.outputs.pyshares == 'changed' || needs.paths.outputs.force != 'success') && (needs.core.result == 'success' || needs.core.result == 'skipped')
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Configure CICD AWS Credentials
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           aws-region: eu-west-1
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: AWS Configure Role
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume:  arn:aws:iam::${{ env.account_id }}:role/sharesCICD
-          aws-region: eu-west-3
-          role-skip-session-tagging: true
-          role-duration-seconds: 1200
-          role-session-name: cicd_role_session
+#       - name: AWS Configure Role
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           role-to-assume:  arn:aws:iam::${{ env.account_id }}:role/sharesCICD
+#           aws-region: eu-west-3
+#           role-skip-session-tagging: true
+#           role-duration-seconds: 1200
+#           role-session-name: cicd_role_session
 
-      - uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.0.10
-      - name: 'checkout'
-        uses: actions/checkout@v2
+#       - uses: hashicorp/setup-terraform@v1
+#         with:
+#           terraform_version: 1.0.10
+#       - name: 'checkout'
+#         uses: actions/checkout@v2
 
-      - name: 'Terraform plan'
-        run: make plan TF_VAR_tfstack=golden_gun_ecs TF_VAR_envtype=dev
-      - name: 'Terraform apply'
-        run: make apply TF_VAR_tfstack=golden_gun_ecs TF_VAR_envtype=dev
-      - name: 'Terraform cleanup'
-        run: make clean TF_VAR_tfstack=golden_gun_ecs TF_VAR_envtype=dev
+#       - name: 'Terraform plan'
+#         run: make plan TF_VAR_tfstack=pyshares TF_VAR_envtype=dev
+#       - name: 'Terraform apply'
+#         run: make apply TF_VAR_tfstack=pyshares TF_VAR_envtype=dev
+#       - name: 'Terraform cleanup'
+#         run: make clean TF_VAR_tfstack=pyshares TF_VAR_envtype=dev
 
-  golden_gun:
-    needs:
-     - paths
-     - core
-    if: always() && (needs.paths.outputs.infra == 'changed' || needs.paths.outputs.core == 'changed' || needs.paths.outputs.golden_gun == 'changed' || needs.paths.outputs.force != 'success') && (needs.core.result == 'success' || needs.core.result == 'skipped')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Configure CICD AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-region: eu-west-1
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#   website:
+#     needs:
+#      - paths
+#      - core
+#     if: always() && (needs.paths.outputs.infra == 'changed' || needs.paths.outputs.core == 'changed' || needs.paths.outputs.website == 'changed' || needs.paths.outputs.force != 'success') && (needs.core.result == 'success' || needs.core.result == 'skipped')
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Configure CICD AWS Credentials
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           aws-region: eu-west-1
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: AWS Configure Role
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume:  arn:aws:iam::${{ env.account_id }}:role/sharesCICD
-          aws-region: eu-west-3
-          role-skip-session-tagging: true
-          role-duration-seconds: 1200
-          role-session-name: cicd_role_session
+#       - name: AWS Configure Role
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           role-to-assume:  arn:aws:iam::${{ env.account_id }}:role/sharesCICD
+#           aws-region: eu-west-3
+#           role-skip-session-tagging: true
+#           role-duration-seconds: 1200
+#           role-session-name: cicd_role_session
 
-      - uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.0.10
-      - name: 'checkout'
-        uses: actions/checkout@v2
+#       - uses: hashicorp/setup-terraform@v1
+#         with:
+#           terraform_version: 1.0.10
+#       - name: 'checkout'
+#         uses: actions/checkout@v2
 
-      - name: 'Terraform plan'
-        run: make plan TF_VAR_tfstack=golden_gun TF_VAR_envtype=dev
-      - name: 'Terraform apply'
-        run: make apply TF_VAR_tfstack=golden_gun TF_VAR_envtype=dev
-      - name: 'Terraform cleanup'
-        run: make clean TF_VAR_tfstack=golden_gun TF_VAR_envtype=dev
+#       - name: 'Terraform plan'
+#         run: make plan TF_VAR_tfstack=website TF_VAR_envtype=dev
+#       - name: 'Terraform apply'
+#         run: make apply TF_VAR_tfstack=website TF_VAR_envtype=dev
+#       - name: 'Terraform cleanup'
+#         run: make clean TF_VAR_tfstack=website TF_VAR_envtype=dev
+
+#   metabase:
+#     needs:
+#      - paths
+#      - core
+#     if: always() && (needs.paths.outputs.infra == 'changed' || needs.paths.outputs.core == 'changed' || needs.paths.outputs.metabase == 'changed' || needs.paths.outputs.force != 'success') && (needs.core.result == 'success' || needs.core.result == 'skipped')
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Configure CICD AWS Credentials
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           aws-region: eu-west-1
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+#       - name: AWS Configure Role
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           role-to-assume:  arn:aws:iam::${{ env.account_id }}:role/sharesCICD
+#           aws-region: eu-west-3
+#           role-skip-session-tagging: true
+#           role-duration-seconds: 1200
+#           role-session-name: cicd_role_session
+
+#       - uses: hashicorp/setup-terraform@v1
+#         with:
+#           terraform_version: 1.0.10
+#       - name: 'checkout'
+#         uses: actions/checkout@v2
+
+#       - name: 'Terraform plan'
+#         run: make plan TF_VAR_tfstack=metabase TF_VAR_envtype=dev
+#       - name: 'Terraform apply'
+#         run: make apply TF_VAR_tfstack=metabase TF_VAR_envtype=dev
+#       - name: 'Terraform cleanup'
+#         run: make clean TF_VAR_tfstack=metabase TF_VAR_envtype=dev
+
+
+#   golden_gun_ecs:
+#     needs:
+#      - paths
+#      - core
+#     if: always() && (needs.paths.outputs.infra == 'changed' || needs.paths.outputs.core == 'changed' || needs.paths.outputs.golden_gun_ecs == 'changed' || needs.paths.outputs.force != 'success') && (needs.core.result == 'success' || needs.core.result == 'skipped')
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Configure CICD AWS Credentials
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           aws-region: eu-west-1
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+#       - name: AWS Configure Role
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           role-to-assume:  arn:aws:iam::${{ env.account_id }}:role/sharesCICD
+#           aws-region: eu-west-3
+#           role-skip-session-tagging: true
+#           role-duration-seconds: 1200
+#           role-session-name: cicd_role_session
+
+#       - uses: hashicorp/setup-terraform@v1
+#         with:
+#           terraform_version: 1.0.10
+#       - name: 'checkout'
+#         uses: actions/checkout@v2
+
+#       - name: 'Terraform plan'
+#         run: make plan TF_VAR_tfstack=golden_gun_ecs TF_VAR_envtype=dev
+#       - name: 'Terraform apply'
+#         run: make apply TF_VAR_tfstack=golden_gun_ecs TF_VAR_envtype=dev
+#       - name: 'Terraform cleanup'
+#         run: make clean TF_VAR_tfstack=golden_gun_ecs TF_VAR_envtype=dev
+
+#   golden_gun:
+#     needs:
+#      - paths
+#      - core
+#     if: always() && (needs.paths.outputs.infra == 'changed' || needs.paths.outputs.core == 'changed' || needs.paths.outputs.golden_gun == 'changed' || needs.paths.outputs.force != 'success') && (needs.core.result == 'success' || needs.core.result == 'skipped')
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Configure CICD AWS Credentials
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           aws-region: eu-west-1
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+#       - name: AWS Configure Role
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           role-to-assume:  arn:aws:iam::${{ env.account_id }}:role/sharesCICD
+#           aws-region: eu-west-3
+#           role-skip-session-tagging: true
+#           role-duration-seconds: 1200
+#           role-session-name: cicd_role_session
+
+#       - uses: hashicorp/setup-terraform@v1
+#         with:
+#           terraform_version: 1.0.10
+#       - name: 'checkout'
+#         uses: actions/checkout@v2
+
+#       - name: 'Terraform plan'
+#         run: make plan TF_VAR_tfstack=golden_gun TF_VAR_envtype=dev
+#       - name: 'Terraform apply'
+#         run: make apply TF_VAR_tfstack=golden_gun TF_VAR_envtype=dev
+#       - name: 'Terraform cleanup'
+#         run: make clean TF_VAR_tfstack=golden_gun TF_VAR_envtype=dev
